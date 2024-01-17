@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import subprocess
-from datetime import datetime
 
 import setuptools
 
@@ -10,21 +8,6 @@ import setuptools
 def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
-
-try:
-    with open('alerta/build.py', 'w') as f:
-        build = """
-        BUILD_NUMBER = '{build_number}'
-        BUILD_DATE = '{date}'
-        BUILD_VCS_NUMBER = '{revision}'
-        """.format(
-            build_number=os.environ.get('BUILD_NUMBER', 'PROD'),
-            date=datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-            revision=subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('utf-8').strip()
-        ).replace('    ', '')
-        f.write(build)
-except Exception:
-    pass
 
 setuptools.setup(
     name='alerta-server',
@@ -55,7 +38,7 @@ setuptools.setup(
         'sentry-sdk[flask]>=0.10.2',
     ],
     extras_require={
-        'mongodb': ['pymongo>=3.9.0,<4.0'],
+        'mongodb': ['pymongo'],
         'postgres': ['psycopg2']
     },
     include_package_data=True,
@@ -99,11 +82,11 @@ setuptools.setup(
         'Intended Audience :: System Administrators',
         'Intended Audience :: Telecommunications Industry',
         'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.8',
         'Topic :: System :: Monitoring',
     ],
-    python_requires='>=3.8'
+    python_requires='>=3.9'
 )
